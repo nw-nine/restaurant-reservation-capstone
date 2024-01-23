@@ -1,0 +1,5 @@
+DATABASE_URL=postgres://dtveeawl:Lcivf0uxxqTQOQPyhoGbF-GS-xftIDd4@heffalump.db.elephantsql.com/dtveeawl
+# DATABASE_URL_DEVELOPMENT = postgres://dtveeawl:Lcivf0uxxqTQOQPyhoGbF-GS-xftIDd4@heffalump.db.elephantsql.com/dtveeawl
+# DATABASE_URL_TEST = postgres://dtveeawl:Lcivf0uxxqTQOQPyhoGbF-GS-xftIDd4@heffalump.db.elephantsql.com/dtveeawl
+# DATABASE_URL_PREVIEW = postgres://dtveeawl:Lcivf0uxxqTQOQPyhoGbF-GS-xftIDd4@heffalump.db.elephantsql.com/dtveeawl
+# LOG_LEVEL=info
