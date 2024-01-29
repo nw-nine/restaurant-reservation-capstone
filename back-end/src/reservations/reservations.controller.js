@@ -67,6 +67,24 @@ function isFuture(req, res, next) {
   next();
 }
 
+function buisnessHours(req, res, next) {
+  const reservation = req.body.data;
+  const [hour, minute] = reservation.reservation_time.split(":");
+  if (hour < 10 || hour > 21) {
+    return next({
+      status: 400,
+      message: "Reservation must be made within business hours",
+    });
+  }
+  if ((hour < 11 && minute < 30) || (hour > 20 && minute > 30)) {
+    return next({
+      status: 400,
+      message: "Reservation must be made within business hours",
+    });
+  }
+  next();
+}
+
 async function list(req, res) {
   const { date } = req.query
   if(!date) {
@@ -94,6 +112,7 @@ module.exports = {
     hasValidFields,
     notTuesday,
     isFuture,
+    buisnessHours,
     asyncErrorBoundary(create),
   ],
   list: [asyncErrorBoundary(list)],
