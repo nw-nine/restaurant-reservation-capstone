@@ -47,6 +47,26 @@ const hasValidFields = (req, res, next) => {
   next();
 }
 
+function notTuesday(req, res, next) {
+  const { reservation_date } = req.body.data;
+  const [year, month, day] = reservation_date.split("-");
+  const date = new Date(`${month} ${day}, ${year}`);
+  if (date.getDay() === 2) {
+    return next({ status: 400, message: "Reservations are closed on Tuesdays" });
+  }
+  res.locals.date = date;
+  next();
+}
+
+function isFuture(req, res, next) {
+  const date = res.locals.date;
+  const today = new Date();
+  if (date < today) {
+    return next({ status: 400, message: "Only future reservations allowed" });
+  }
+  next();
+}
+
 async function list(req, res) {
   const { date } = req.query
   if(!date) {
@@ -72,6 +92,8 @@ async function create(req, res) {
 module.exports = {
   create: [
     hasValidFields,
+    notTuesday,
+    isFuture,
     asyncErrorBoundary(create),
   ],
   list: [asyncErrorBoundary(list)],
