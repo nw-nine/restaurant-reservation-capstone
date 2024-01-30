@@ -8,6 +8,7 @@ exports.up = function (knex) {
         .inTable("reservations")
         .onDelete("CASCADE");
       table.string("table_name").notNullable();
+      table.boolean("occupied").defaultTo(false)
       table.integer("capacity").notNullable();
      
     });

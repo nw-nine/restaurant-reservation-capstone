@@ -5,15 +5,15 @@ const service = require("./reservations.service")
 const asyncErrorBoundary = require('../errors/asyncErrorBoundry')
 
 async function reservationExists(req, res, next) {
-  const reservation = await service.read(req.params.reservation_id);
+  const reservation = await service.read(req.params.reservation_id)
   if (reservation) {
     res.locals.reservation = reservation;
-    return next();
+    return next()
   }
   return next({
     status: 404,
     message: `Reservation id not found : ${req.params.reservation_id}`,
-  });
+  })
 }
 
 const hasValidFields = (req, res, next) => {
@@ -49,32 +49,32 @@ const hasValidFields = (req, res, next) => {
 
 function notTuesday(req, res, next) {
   const { reservation_date } = req.body.data;
-  const [year, month, day] = reservation_date.split("-");
-  const date = new Date(`${month} ${day}, ${year}`);
+  const [year, month, day] = reservation_date.split("-")
+  const date = new Date(`${month} ${day}, ${year}`)
   if (date.getDay() === 2) {
-    return next({ status: 400, message: "Reservations are closed on Tuesdays" });
+    return next({ status: 400, message: "Reservations are closed on Tuesdays" })
   }
   res.locals.date = date;
-  next();
+  next()
 }
 
 function isFuture(req, res, next) {
-  const date = res.locals.date;
-  const today = new Date();
+  const date = res.locals.date
+  const today = new Date()
   if (date < today) {
     return next({ status: 400, message: "Only future reservations allowed" });
   }
-  next();
+  next()
 }
 
 function buisnessHours(req, res, next) {
-  const reservation = req.body.data;
-  const [hour, minute] = reservation.reservation_time.split(":");
+  const reservation = req.body.data
+  const [hour, minute] = reservation.reservation_time.split(":")
   if (hour < 10 || hour > 21) {
     return next({
       status: 400,
       message: "Reservation must be made within business hours",
-    });
+    })
   }
   if ((hour < 11 && minute < 30) || (hour > 20 && minute > 30)) {
     return next({
