@@ -25,9 +25,16 @@ function update(tableId, updatedTable) {
         .update(updatedTable, '*');
 }
 
+function destroy(tableId) {
+    return knex("tables")
+        .where({ table_id: tableId })
+        .update({ occupied: false, reservation_id: null }, "*")
+}
+
 module.exports = {
     list,
     create,
     read,
     update,
+    destroy,
 }
