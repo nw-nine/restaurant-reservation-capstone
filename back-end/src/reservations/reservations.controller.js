@@ -36,6 +36,30 @@ const hasValidFields = (req, res, next) => {
     }
   }
 
+  if(req.body.data.first_name === '') {
+    return next({
+      status: 400, 
+      message: "first_name is empty"
+    })
+  }
+  if(req.body.data.last_name === '') {
+    return next({
+      status: 400, 
+      message: "last_name is empty"
+    })
+  }
+  if(req.body.data.mobile_number === '') {
+    return next({
+      status: 400, 
+      message: "mobile_number is empty"
+    })
+  }
+  if(req.body.data.people === 0) {
+    return next({
+      status: 400, 
+      message: "people is 0"
+    })
+  }
   if (
     !req.body.data.reservation_date.match(/\d{4}-\d{2}-\d{2}/) ||
     typeof req.body.data.people !== "number" ||
