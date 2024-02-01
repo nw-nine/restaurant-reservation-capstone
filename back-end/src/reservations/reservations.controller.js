@@ -17,10 +17,7 @@ async function reservationExists(req, res, next) {
 }
 
 const hasValidFields = (req, res, next) => {
-  if(!req.body.data) {
-    return next({ status: 400, message: 'Data missing'})
-  }
-  const knownFields = [
+  const requiredFields = [
     "first_name",
     "last_name",
     "mobile_number",
@@ -28,20 +25,33 @@ const hasValidFields = (req, res, next) => {
     "reservation_time",
     "people",
   ]
-  for (const field of knownFields) {
-    if (!req.body.data[field]) {
+
+  if (!req.body.data) {
+    return next({ status: 400, message: "Data missing" });
+  }
+
+  for (const field of requiredFields) {
+    if (!req.body.data.hasOwnProperty(field)) {
       return next({ status: 400, message: `${field} is required` });
     }
   }
+
   if (
-    !req.body.data.reservation_date.match(/\d{4}-\d{2}-\d{2}/g) ||
+    !req.body.data.reservation_date.match(/\d{4}-\d{2}-\d{2}/) ||
     typeof req.body.data.people !== "number" ||
-    !req.body.data.reservation_time.match(/[0-9]{2}:[0-9]{2}/g)
-  )
+    !req.body.data.reservation_time.match(/^[0-9]{2}:[0-9]{2}$/)
+  ) {
     return next({
       status: 400,
-      message: `Invalid input for reservation_date, reservation_time, or people`,
+      message: "Invalid input for reservation_date, reservation_time, or people",
     });
+  }
+
+  if (!req.body.data.status) {
+    req.body.data.status = "booked";
+  } else if (!["booked", "seated", "finished"].includes(req.body.data.status)) {
+    return next({ status: 400, message: "Invalid status" });
+  }
 
   res.locals.validReservation = req.body.data;
   next();
@@ -87,13 +97,7 @@ function buisnessHours(req, res, next) {
 
 async function list(req, res) {
   const { date } = req.query
-  if(!date) {
-    const data = await service.list()
-    res.json({ data });
-  } else {
-    const data = await service.listByDate(date)
-    res.json({ data })
-  }
+  res.json({ data: await service.list(date) });
 }
 
 async function read(req, res) {
@@ -102,10 +106,62 @@ async function read(req, res) {
     res.json({ data });
 }
 
-async function create(req, res) {
+async function create(req, res, next) {
+  if(["seated", "finished"].includes(res.locals.validReservation.status)) {
+    return next({
+      status: 400,
+      message: `invalid status : ${res.locals.validReservation.status}`
+    })
+  }
   const data = await service.create(res.locals.validReservation);
   res.status(201).json({ data });
 }
+
+async function update(req, res, next) {
+  const status = req.body.data.status
+
+  if(["seated", "finished", "booked"].includes(status)) {
+    if(res.locals.reservation.status === "finished") {
+      return next({
+        status: 400,
+        message: "can not update finished reservation"
+      })
+    }
+    const updatedReservation = {
+      ...res.locals.reservation,
+      status: status,
+    }
+    const data = await service.update(updatedReservation)
+    res.status(200).json({ data })
+  } else {
+    return next({
+      status: 400,
+      message: `invalid status ${status}`
+    })
+  }
+}
+
+// async function update(req, res, next) {
+//   if(req.body.status !== "seated" && req.body.status !== "finished" && req.body.status !== "booked") {
+//     return next({
+//       status: 400,
+//       message: `${req.body.status} is invalid`,
+//     })
+//   }
+//   if(res.locals.reservation.status === "finished") {
+//     return next({
+//       status: 400,
+//       message: "can not update finished reservation"
+//     })
+//   }
+//   const updated = {
+//     ...res.locals.reservation,
+//     status: req.body.status,
+//   }
+//   const data = await service.update(updated)
+//   res.status(200).json({ data })
+// }
+
 
 module.exports = {
   create: [
@@ -116,5 +172,6 @@ module.exports = {
     asyncErrorBoundary(create),
   ],
   list: [asyncErrorBoundary(list)],
-  read: [asyncErrorBoundary(reservationExists), asyncErrorBoundary(read)]
+  read: [asyncErrorBoundary(reservationExists), asyncErrorBoundary(read)],
+  update: [asyncErrorBoundary(reservationExists), asyncErrorBoundary(update)]
 };

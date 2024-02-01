@@ -1,15 +1,19 @@
 const knex = require("../db/connection")
 
-async function list() {
-    return await knex("reservations").select("*").orderBy("reservation_date").orderBy("reservation_time")
-}
+// async function list() {
+//     return await knex("reservations").select("*").orderBy("reservation_date").orderBy("reservation_time")
+// }
 
 async function read(reservationId) {
     return await knex("reservations").where({ reservation_id: reservationId }).first()
 }
 
-async function listByDate(date) {
-    return await knex("reservations").where({ reservation_date: date }).select("*").orderBy("reservation_time")
+async function list(date) {
+    return await knex("reservations")
+    .select("*")
+    .where({ reservation_date: date })
+    .andWhereNot({ status: "finished"})
+    .orderBy("reservation_time")
 }
 
 async function destroy(reservationId) {
@@ -23,11 +27,26 @@ async function create(newReservation) {
     .then(rows => rows[0])
 }
 
+async function update(reservation) {
+    return await knex("reservations")
+        .where("reservation_id", reservation.reservation_id)
+        .update(reservation, "*")
+        .then((updated) => updated[0])
+}
+
+async function updateStatus(reservationId, newStatus) {
+    return await knex("reservations")
+        .where({ reservation_id: reservationId })
+        .update({ status: newStatus }, "*")
+        .then((updated) => updated[0])
+}
 
 module.exports = {
     list,
-    listByDate,
+    // listByDate,
     read,
     destroy,
     create,
+    update,
+    updateStatus,
 }

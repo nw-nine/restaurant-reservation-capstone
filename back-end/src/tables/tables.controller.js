@@ -20,6 +20,9 @@ async function validateUpdate(req, res, next) {
     if (!reservation) {
         return next({ status: 404, message: `Reservation not found: ${reservation_id}` });
     }
+    if (reservation.status === "seated") {
+        return next({ status: 400, message: "reservation is already seated"})
+    }
     if (table.capacity < reservation.people) {
         return next({ status: 400, message: "Table does not have sufficient capacity" });
     }
@@ -83,8 +86,9 @@ async function update(req, res) {
         reservation_id: reservationId,
         occupied: true,
     };
-    const data = await service.update(tableId, updatedTableData);
-    res.json({ data });
+    const updatedTable = await service.update(tableId, updatedTableData);
+    await reservationService.updateStatus(reservationId, "seated")
+    res.status(200).json({ data: updatedTable });
 }
 
 async function destroy(req, res, next) {
@@ -92,6 +96,8 @@ async function destroy(req, res, next) {
     if(!table.occupied) {
         return next({ status: 400, message: "table is not occupied"})
     }
+    const reservationId = table.reservation_id
+    await reservationService.updateStatus(reservationId, "finished")
     await service.destroy(table.table_id)
     res.sendStatus(200)
 }
