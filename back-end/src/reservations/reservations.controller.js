@@ -119,6 +119,22 @@ function buisnessHours(req, res, next) {
   next();
 }
 
+// async function updateStatus(req, res, next) {
+//   const { reservation_id } = req.params;
+//   const { status } = req.body.data;
+
+//   if (!["booked", "seated", "finished", "cancelled"].includes(status)) {
+//     return next({ status: 400, message: `Invalid status: ${status}` });
+//   }
+
+//   try {
+//     const updatedReservation = await service.updateStatus(reservation_id, status);
+//     res.status(200).json({ data: updatedReservation });
+//   } catch (error) {
+//     next(error);
+//   }
+// }
+
 async function list(req, res) {
   const { date } = req.query
   let data
@@ -153,7 +169,7 @@ async function create(req, res, next) {
 async function update(req, res, next) {
   const status = req.body.data.status
 
-  if(["seated", "finished", "booked"].includes(status)) {
+  if(["seated", "finished", "booked", "cancelled"].includes(status)) {
     if(res.locals.reservation.status === "finished") {
       return next({
         status: 400,
@@ -184,6 +200,11 @@ function queryChecker(req, res, next) {
   }
 }
 
+async function edit(req, res) {
+  const data = await service.update(res.locals.validReservation)
+  res.json({ data })
+}
+
 
 
 module.exports = {
@@ -196,5 +217,10 @@ module.exports = {
   ],
   list: [asyncErrorBoundary(queryChecker), asyncErrorBoundary(list)],
   read: [asyncErrorBoundary(reservationExists), asyncErrorBoundary(read)],
-  update: [asyncErrorBoundary(reservationExists), asyncErrorBoundary(update)]
+  update: [asyncErrorBoundary(reservationExists), asyncErrorBoundary(update)],
+  edit: [
+    asyncErrorBoundary(reservationExists),
+    hasValidFields,
+    asyncErrorBoundary(edit) 
+  ]
 };
