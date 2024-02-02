@@ -121,7 +121,16 @@ function buisnessHours(req, res, next) {
 
 async function list(req, res) {
   const { date } = req.query
-  res.json({ data: await service.list(date) });
+  let data
+
+  if(res.locals.mobile_number) {
+    data = await service.search(res.locals.mobile_number)
+  } else if(date) {
+    data = await service.list(date)
+  } else {
+    return res.status(400).json({ error: "query parameter required"})
+  }
+  res.json({ data });
 }
 
 async function read(req, res) {
@@ -165,26 +174,16 @@ async function update(req, res, next) {
   }
 }
 
-// async function update(req, res, next) {
-//   if(req.body.status !== "seated" && req.body.status !== "finished" && req.body.status !== "booked") {
-//     return next({
-//       status: 400,
-//       message: `${req.body.status} is invalid`,
-//     })
-//   }
-//   if(res.locals.reservation.status === "finished") {
-//     return next({
-//       status: 400,
-//       message: "can not update finished reservation"
-//     })
-//   }
-//   const updated = {
-//     ...res.locals.reservation,
-//     status: req.body.status,
-//   }
-//   const data = await service.update(updated)
-//   res.status(200).json({ data })
-// }
+function queryChecker(req, res, next) {
+  const { mobile_number } = req.query
+  if(mobile_number) {
+    res.locals.mobile_number = mobile_number
+    next()
+  } else {
+    return next()
+  }
+}
+
 
 
 module.exports = {
@@ -195,7 +194,7 @@ module.exports = {
     buisnessHours,
     asyncErrorBoundary(create),
   ],
-  list: [asyncErrorBoundary(list)],
+  list: [asyncErrorBoundary(queryChecker), asyncErrorBoundary(list)],
   read: [asyncErrorBoundary(reservationExists), asyncErrorBoundary(read)],
   update: [asyncErrorBoundary(reservationExists), asyncErrorBoundary(update)]
 };
