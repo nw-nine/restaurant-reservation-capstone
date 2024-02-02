@@ -119,22 +119,6 @@ function buisnessHours(req, res, next) {
   next();
 }
 
-// async function updateStatus(req, res, next) {
-//   const { reservation_id } = req.params;
-//   const { status } = req.body.data;
-
-//   if (!["booked", "seated", "finished", "cancelled"].includes(status)) {
-//     return next({ status: 400, message: `Invalid status: ${status}` });
-//   }
-
-//   try {
-//     const updatedReservation = await service.updateStatus(reservation_id, status);
-//     res.status(200).json({ data: updatedReservation });
-//   } catch (error) {
-//     next(error);
-//   }
-// }
-
 async function list(req, res) {
   const { date } = req.query
   let data
