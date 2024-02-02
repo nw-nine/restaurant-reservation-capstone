@@ -14,22 +14,28 @@ function CreateReservation() {
         mobile_number: "",
         reservation_date: "",
         reservation_time: "",
-        people: "",
+        people: 1,
     }
 
     const [formData, setFormData] = useState(intialFormData)
 
     function handleChange(event) {
+        const value = event.target.type === "number" ? Number(event.target.value) : event.target.value
         setFormData({
             ...formData,
-            [event.target.name]: event.target.value
+            [event.target.name]: value
         })
     }
 
     const handleSubmit = async (event) => {
         event.preventDefault()
-        createReservation(formData)
-        history.push(`/dashboard?state=${formData.reservation_date}`)
+        try {
+            await createReservation(formData)
+            setFormData({...intialFormData})
+            history.push(`/dashboard?state=${formData.reservation_date}`)
+        } catch (error) {
+            
+        }
     }
 
     function goBack() {

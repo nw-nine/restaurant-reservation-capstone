@@ -70,5 +70,13 @@ export async function listReservations(params, signal) {
 }
 
 export async function createReservation(reservation) {
-  return await axios.post(`${API_BASE_URL}/reservations`, reservation)
+  return await axios.post(`${API_BASE_URL}/reservations`, { data: reservation }, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+  .catch((error) => {
+    console.error("Error creating reservation:", error.response);
+    throw error;
+  });
 }
