@@ -2,6 +2,7 @@ import { useState } from "react"
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min"
 import { createReservation } from "../utils/api"
 import ReservationForm from "./ReservationForm"
+import ErrorAlert from "./ErrorAlert"
 
 
 function CreateReservation() {
@@ -18,6 +19,7 @@ function CreateReservation() {
     }
 
     const [formData, setFormData] = useState(intialFormData)
+    const [reservationError, setReservationError] = useState(null)
 
     function handleChange(event) {
         const value = event.target.type === "number" ? Number(event.target.value) : event.target.value
@@ -34,7 +36,12 @@ function CreateReservation() {
             setFormData({...intialFormData})
             history.push(`/dashboard?state=${formData.reservation_date}`)
         } catch (error) {
-            
+            if(error.response) {
+                setReservationError({ message: error.response.data.error })
+            }
+            if(!error.response) {
+                setReservationError(error)
+            }
         }
     }
 
@@ -52,6 +59,7 @@ function CreateReservation() {
         </header>
         <div>
             <ReservationForm formData={formData} handleChange={handleChange} handleSubmit={handleSubmit} goBack={goBack}/>
+            <ErrorAlert error={reservationError}/>
         </div>
         </>
     )

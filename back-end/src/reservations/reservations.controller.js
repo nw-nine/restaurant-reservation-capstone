@@ -93,13 +93,38 @@ function notTuesday(req, res, next) {
 }
 
 function isFuture(req, res, next) {
-  const date = res.locals.date
-  const today = new Date()
-  if (date < today) {
-    return next({ status: 400, message: "Only future reservations allowed" });
+  const date = res.locals.date; // Date object set in notTuesday
+  const reservationTime = res.locals.validReservation.reservation_time; // "HH:MM" format
+
+  // Extract components from the reservation date to combine with time for a full datetime comparison
+  const year = date.getFullYear();
+  const month = date.getMonth(); // Note: getMonth() returns 0-11
+  const day = date.getDate();
+
+  // Extract hours and minutes from the reservation time
+  const [hours, minutes] = reservationTime.split(":").map(Number);
+
+  // Create a Date object for the reservation's date and time
+  const reservationDateTime = new Date(year, month, day, hours, minutes);
+
+  // Get the current date and time
+  const now = new Date();
+
+  // Compare the reservation datetime with the current datetime
+  if (reservationDateTime <= now) {
+    return next({ status: 400, message: "Only future reservations allowed." });
   }
-  next()
+  next();
 }
+
+// function isFuture(req, res, next) {
+//   const date = res.locals.date
+//   const today = new Date()
+//   if (date < today) {
+//     return next({ status: 400, message: "Only future reservations allowed" });
+//   }
+//   next()
+// }
 
 function buisnessHours(req, res, next) {
   const reservation = req.body.data

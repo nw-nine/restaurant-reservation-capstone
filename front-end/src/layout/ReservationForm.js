@@ -1,6 +1,6 @@
 
 
-function ReservationForm({ formData, handleChange, handleSubmit, goback  }) {
+function ReservationForm({ formData, handleChange, handleSubmit, goBack  }) {
 
 
     return (
@@ -77,7 +77,7 @@ function ReservationForm({ formData, handleChange, handleSubmit, goback  }) {
                     />
                 </label>
                 <div>
-                    <button onClick={() => goback} className="btn btn-secondary">Cancel</button>
+                    <button onClick={goBack} className="btn btn-secondary">Cancel</button>
                     <button type="submit" className="btn btn-primary">Submit</button>
                 </div>
             </form>
