@@ -12,7 +12,7 @@ function CreateSeats() {
     const [table, setTable] = useState(null)
     const [tables, setTables] = useState([])
     const [seatError, setSeatError] = useState(null)
-    const reservation_id = useParams()
+    const { reservation_id } = useParams()
 
     useEffect(loadTables, [])
 
@@ -30,8 +30,9 @@ function CreateSeats() {
     const handleSubmit = async (event) => {
         event.preventDefault()
         if(table === 0) return
+        const selectedTable = tables.find(t => t.table_id === Number(table))
         try {
-            seatTable(reservation_id, table)
+            seatTable(reservation_id, selectedTable)
             history.push(`/dashboard`)
         } catch (error) {
             if(error.response) {
