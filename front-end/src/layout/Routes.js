@@ -7,6 +7,9 @@ import CreateReservation from "../reservations/CreateReservation";
 import { today } from "../utils/date-time";
 import CreateTables from "../tables/CreateTables";
 import CreateSeats from "../seating/CreateSeats";
+import MobileSearch from "../search/MobileSearch";
+
+
 
 /**
  * Defines all the routes for the application.
@@ -35,6 +38,9 @@ function Routes() {
       </Route>
       <Route path="/tables/new">
         <CreateTables />
+      </Route>
+      <Route>
+        <MobileSearch path="/search"/>
       </Route>
       <Route>
         <NotFound />

@@ -141,3 +141,8 @@ export async function updateResStatus(reservation, newStatus, signal) {
   }
   return await fetchJson(url, options)
 }
+
+export async function listResByNum(mobile_number, signal) {
+  const url = `${API_BASE_URL}/reservations?mobile_number=${mobile_number}`
+  return await fetchJson(url, signal)
+}
