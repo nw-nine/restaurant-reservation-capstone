@@ -32,7 +32,7 @@ function CreateSeats() {
         if(table === 0) return
         const selectedTable = tables.find(t => t.table_id === Number(table))
         try {
-            seatTable(reservation_id, selectedTable)
+            await seatTable(reservation_id, selectedTable)
             history.push(`/dashboard`)
         } catch (error) {
             if(error.response) {

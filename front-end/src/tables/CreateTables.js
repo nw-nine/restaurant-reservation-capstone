@@ -28,9 +28,9 @@ function CreateTables() {
     }
 
     const handleSubmit = async (event) => {
+        event.preventDefault()
         try {
-            event.preventDefault()
-            createTables(formData)
+            await createTables(formData)
             setFormData({...intialFormData})
             history.push(`/dashboard`)
             

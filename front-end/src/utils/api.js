@@ -80,8 +80,22 @@ export async function createReservation(reservation) {
     throw error;
   });
 }
-export async function createTables(table)  {
-  return await axios.post(`${API_BASE_URL}/tables`, { data: table } )
+export async function createTables(tableData, signal) {
+  const url = `${API_BASE_URL}/tables`;
+  const dataToSend = {
+    ...tableData,
+    capacity: Number(tableData.capacity)
+  }
+  const options = {
+    method: 'POST',
+    headers: {
+      ...headers,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ data: dataToSend }),
+    signal,
+  };
+  return await fetchJson(url, options);
 }
 
 export async function listTables(signal) {
