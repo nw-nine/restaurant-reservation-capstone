@@ -80,3 +80,24 @@ export async function createReservation(reservation) {
     throw error;
   });
 }
+export async function createTables(table)  {
+  return await axios.post(`${API_BASE_URL}/tables`, { data: table } )
+}
+
+export async function listTables(signal) {
+  const url = `${API_BASE_URL}/tables`
+  return await fetchJson(url, { headers, signal }, [])
+}
+
+export async function seatTable(reservation_id, table, signal) {
+  const url = `${API_BASE_URL}/tables/${table.table_id}/seat` 
+  const options = {
+    method: `PUT`,
+    headers,
+    body: JSON.stringify({
+      data: { reservation_id: reservation_id }
+    }),
+    signal,
+  }
+  return await fetchJson(url, options)
+}

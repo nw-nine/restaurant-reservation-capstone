@@ -2,7 +2,7 @@ import { useState } from "react"
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min"
 import { createReservation } from "../utils/api"
 import ReservationForm from "./ReservationForm"
-import ErrorAlert from "./ErrorAlert"
+import ErrorAlert from "../layout/ErrorAlert"
 
 
 function CreateReservation() {
