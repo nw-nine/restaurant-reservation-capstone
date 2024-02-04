@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { listTables } from "../utils/api";
+import { listTables, unseat } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
 
 
@@ -15,6 +15,10 @@ function ViewTables() {
         setTablesError(null)
         listTables(abortController.signal).then(setTables).catch(setTablesError)
         return () => abortController.abort()
+    }
+
+    function deleteHandler(table_id) {
+        unseat(table_id).then(loadTables).catch(setTablesError)
     }
 
     return (
@@ -34,6 +38,17 @@ function ViewTables() {
                         </div>
                         <div data-table-id-status={table.table_id} className="col-6">
                             <p>{table.occupied ? "occupied" : "free"}</p>
+                        </div>
+                        <div  className="col-3">
+                            {table.occupied && (
+                                <button data-table-id-finish={table.table_id} className="btn btn-warning" onClick={() => {
+                                        if(window.confirm("Is this table ready to seat new guests? This cannot be undone")) {
+                                            deleteHandler(table.table_id)
+                                        }
+                                    }}>
+                                    Finish
+                                </button>
+                            )}
                         </div>
                     </div>
                 ))}
