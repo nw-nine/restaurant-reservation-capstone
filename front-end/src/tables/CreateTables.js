@@ -11,7 +11,7 @@ function CreateTables() {
 
     const intialFormData = {
         table_name: "",
-        capacity: 1,
+        capacity: 0,
         reservation_id: null,
         occupied: false
 
@@ -27,8 +27,17 @@ function CreateTables() {
         })
     }
 
+    function validateForm() {
+        if (formData.capacity < 1 || isNaN(formData.capacity)) {
+            setTableError({ message: "Capacity must be a positive number and less than 12." });
+            return false;
+        }
+        return true;
+    }
+
     const handleSubmit = async (event) => {
         event.preventDefault()
+        if(!validateForm()) return
         try {
             await createTables(formData)
             setFormData({...intialFormData})

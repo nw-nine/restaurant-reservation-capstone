@@ -34,7 +34,7 @@ function CreateReservation() {
         try {
             await createReservation(formData)
             setFormData({...intialFormData})
-            history.push(`/dashboard?state=${formData.reservation_date}`)
+            history.push(`/dashboard?date=${formData.reservation_date}`)
         } catch (error) {
             if(error.response) {
                 setReservationError({ message: error.response.data.error })

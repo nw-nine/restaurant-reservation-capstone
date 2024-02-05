@@ -8,7 +8,7 @@ function ViewTables() {
     const [tables, setTables] = useState([])
     const [tablesError, setTablesError] = useState(null)
 
-    useEffect(loadTables, [tables])
+    useEffect(loadTables, [])
 
     function loadTables() {
         const abortController = new AbortController()

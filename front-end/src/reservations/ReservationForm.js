@@ -15,6 +15,7 @@ function ReservationForm({ formData, handleChange, handleSubmit, goBack  }) {
                         onChange={handleChange}
                         value={formData.first_name}
                         placeholder="First Name"
+                        required={true}
                     />
                 </label>
                 <p>Last name:</p>
@@ -26,6 +27,8 @@ function ReservationForm({ formData, handleChange, handleSubmit, goBack  }) {
                         onChange={handleChange}
                         value={formData.last_name}
                         placeholder="Last Name"
+                        required={true}
+
                     />
                 </label>
                 <p>Phone Number:</p>
@@ -37,6 +40,8 @@ function ReservationForm({ formData, handleChange, handleSubmit, goBack  }) {
                         onChange={handleChange}
                         value={formData.mobile_number}
                         placeholder="Phone Number"
+                        required={true}
+
                     />
                 </label>
                 <p>Date of Reservation</p>
@@ -49,6 +54,8 @@ function ReservationForm({ formData, handleChange, handleSubmit, goBack  }) {
                         onChange={handleChange}
                         value={formData.reservation_date}
                         placeholder="YYYY-MM-DD"
+                        required={true}
+
                     />
                 </label>
                 <p>Time of Reservation</p>
@@ -61,10 +68,12 @@ function ReservationForm({ formData, handleChange, handleSubmit, goBack  }) {
                         onChange={handleChange}
                         value={formData.reservation_time}
                         placeholder="HH:MM"
+                        required={true}
+
                     />
                 </label>
                 <p>Party Size</p>
-                <label htmlFor="poeple">
+                <label htmlFor="people">
                     <input 
                         name="people"
                         type="number"
@@ -74,6 +83,8 @@ function ReservationForm({ formData, handleChange, handleSubmit, goBack  }) {
                         onChange={handleChange}
                         value={formData.people}
                         placeholder="0"
+                        required={true}
+
                     />
                 </label>
                 <div>
