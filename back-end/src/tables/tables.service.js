@@ -7,6 +7,7 @@ function list() {
 }
 
 function create(table) {
+    if(table.reservation_id) table.occupied = true
     return knex("tables")
         .insert(table)
         .returning("*")

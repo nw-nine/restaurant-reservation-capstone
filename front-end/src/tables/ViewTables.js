@@ -37,11 +37,11 @@ function ViewTables() {
                             <p>capacity: {table.capacity}</p>
                         </div>
                         <div data-table-id-status={table.table_id} className="col-6">
-                            <p>{table.occupied ? "occupied" : "free"}</p>
+                            {table.occupied ? "occupied" : "free"}
                         </div>
-                        <div  className="col-3">
+                        <div data-table-id-finish={table.table_id} className="col-3">
                             {table.occupied && (
-                                <button data-table-id-finish={table.table_id} className="btn btn-warning" onClick={() => {
+                                <button  className="btn btn-warning" onClick={() => {
                                         if(window.confirm("Is this table ready to seat new guests? This cannot be undone")) {
                                             deleteHandler(table.table_id)
                                         }

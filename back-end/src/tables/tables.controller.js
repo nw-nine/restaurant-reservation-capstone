@@ -99,7 +99,9 @@ async function destroy(req, res, next) {
     const reservationId = table.reservation_id
     await reservationService.updateStatus(reservationId, "finished")
     await service.destroy(table.table_id)
-    res.sendStatus(200)
+    // res.sendStatus(200).json({ message: "table unseated" })
+    res.json({ message: "table unseated" })
+
 }
 
 module.exports = {

@@ -121,9 +121,6 @@ export async function unseat(table_id, signal) {
   const options ={
     method: `DELETE`,
     headers,
-    body: JSON.stringify({
-      data: {},
-    }),
     signal,
   }
   return await fetchJson(url, options)
