@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { EditRes, readRes } from "../utils/api"
 import { useHistory, useParams } from "react-router-dom/cjs/react-router-dom.min"
 import ErrorAlert from "../layout/ErrorAlert"
+import { formatAsDate, formatAsTime } from "../utils/date-time"
 
 function Edit({
     intialFormData = {
@@ -10,15 +11,14 @@ function Edit({
         mobile_number: "",
         reservation_date: "",
         reservation_time: "",
-        people: "",
-        status: "booked",
+        people: 1,
+        
     },
     }) {
 
-
         const [editsError, setEditsError] = useState(null)
         const { reservation_id } = useParams()
-        const [reservation, setReservation] = useState(intialFormData)
+        const [reservation, setReservation] = useState({...intialFormData})
         const history = useHistory()
 
 
@@ -28,7 +28,11 @@ function Edit({
         const abortController = new AbortController()
         setEditsError(null)
         readRes(reservation_id, abortController.signal)
-            .then(setReservation)
+            .then((loadedReservation) => {
+                loadedReservation.reservation_date = formatAsDate(loadedReservation.reservation_date)
+                loadedReservation.reservation_time = formatAsTime(loadedReservation.reservation_time)
+                setReservation(loadedReservation)
+            })
             .catch(setEditsError)
         return () => abortController.abort()
     }
@@ -42,8 +46,9 @@ function Edit({
 
     function handleSubmit(event) {
         event.preventDefault()
+        console.log(reservation)
         EditRes(reservation)
-            .then(() => history.goBack())
+            .then(() => history.push(`/dashboard?date=${reservation.reservation_date}`))
             .catch(setEditsError)
     }
 
