@@ -19,6 +19,7 @@ function ViewTables() {
 
     function deleteHandler(table_id) {
         unseat(table_id).then(loadTables).catch(setTablesError)
+        window.location.reload()
     }
 
     return (
