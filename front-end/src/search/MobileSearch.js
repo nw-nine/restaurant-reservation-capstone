@@ -8,7 +8,7 @@ function MobileSearch() {
     const [searchError, setSearchError] = useState(null)
     const [mobile_number, setMobile_number] = useState("")
     const [found, setFound] = useState(false)
-    const [notFound, setNotFound] = useState([])
+    const [notFound, setNotFound] = useState(false)
 
 
 
@@ -22,6 +22,7 @@ function MobileSearch() {
                 setNotFound(false)
             } else {
                 setNotFound(true)
+                setSearchError({ message: "No reservations found"})
                 setFound([])
             }
         })
@@ -68,7 +69,7 @@ function MobileSearch() {
                     </button>
                 </fieldset>
                 {notFound && (
-                    <h4>Reservation not found</h4>
+                    <h4>No reservation found</h4>
                 )}
                 {found.length > 0 && (
                     found.map((res, index) => (
