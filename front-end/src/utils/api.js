@@ -146,3 +146,21 @@ export async function listResByNum(mobile_number, signal) {
   const url = `${API_BASE_URL}/reservations?mobile_number=${mobile_number}`
   return await fetchJson(url, signal)
 }
+
+export async function EditRes(reservation, signal) {
+  const url = `${API_BASE_URL}/reservations/${reservation.reservation_id}`
+  const options = {
+    method: `PUT`,
+    headers,
+    body: JSON.stringify({
+      data: reservation
+    }),
+    signal,
+  }
+  return await fetchJson(url, options)
+}
+
+export async function readRes(reservation_id, signal) {
+  const url = `${API_BASE_URL}/reservations/${reservation_id}`
+  return await fetchJson(url, signal).then(formatReservationDate)
+}

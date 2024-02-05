@@ -40,44 +40,69 @@ function Dashboard() {
       .catch(setReservationsError)
   }
 
-  const formatReservation = reservations.map((res, index) => (
+  function handleCancel(reservation) {
+    if(window.confirm("Do you want to cancel this reservation? This cannot be undone.")) {
+      updateResStatus(reservation, "cancelled")
+      window.location.reload()
+    }
+  }
+
+  const formatReservation = reservations.map((reservation, index) => (
     <div key={index} className="d-flex">
       <div className="col-1">
-        <p>{res.first_name}</p>
+        <p>{reservation.first_name}</p>
       </div>
       <div className="col-1">
-        <p>{res.last_name}</p>
+        <p>{reservation.last_name}</p>
       </div>
       <div className="col-1">
-        <p>{res.mobile_number}</p>
+        <p>{reservation.mobile_number}</p>
       </div>
       <div className="col-1">
-        <p>{res.reservation_time}</p>
+        <p>{reservation.reservation_time}</p>
       </div>
       <div className="col-1">
-        <p>{res.people}</p>
+        <p>{reservation.people}</p>
       </div>
       <div className="col-1">
-        <p data-reservation-id-status={res.reservation_id}>{res.status}</p>
+        <p data-reservation-id-status={reservation.reservation_id}>{reservation.status}</p>
       </div>
-      <div>
-        {res.status === "booked" && (
-          <a href={`/reservations/${res.reservation_id}/seat`} id="seat" name="seat">
+      <div className="col-1">
+        {reservation.status === "booked" && (
+          <a href={`/reservations/${reservation.reservation_id}/seat`} id="seat" name="seat">
             <button type="button" id="seat" name="seat" className="btn btn-primary">
               Seat
             </button>
           </a>
         )}
-        {res.status === "seated" && (
+        {reservation.status === "seated" && (
           <button type="button" className="btn btn-warning" onClick={() => {
             if(window.confirm("finish reservation?")) {
-              updateStatus(res, "finished")
+              updateStatus(reservation, "finished")
             }
           }}>
             Finish
           </button>
         )}
       </div>
+        {reservation.status !== "cancelled" && (
+        <>
+          <div className="col-1">
+              <button data-reservation-id-cancel={reservation.reservation_id} className="btn btn-primary" onClick={() => {
+                handleCancel(reservation)
+              }}>
+                Cancel
+              </button>
+          </div>
+          <div className="col-1">
+            <a href={`/reservations/${reservation.reservation_id}/edit`}>
+              <button type="button" className="btn btn-secondary">
+                Edit
+              </button>
+            </a>
+          </div>
+        </>
+        )}
     </div>
   ))
 
@@ -121,7 +146,6 @@ function Dashboard() {
         <h4 className="mb-0">Reservations for {date}</h4>
       </div>
       <ErrorAlert error={reservationsError} />
-      {/* {JSON.stringify(reservations)} */}
       <div>{formatReservation}</div>
       <div className="col-4">
         <ViewTables />

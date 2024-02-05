@@ -8,6 +8,7 @@ import { today } from "../utils/date-time";
 import CreateTables from "../tables/CreateTables";
 import CreateSeats from "../seating/CreateSeats";
 import MobileSearch from "../search/MobileSearch";
+import Edit from "../reservations/Edit";
 
 
 
@@ -36,11 +37,14 @@ function Routes() {
       <Route path="/reservations/:reservation_id/seat">
         <CreateSeats />
       </Route>
+      <Route path="/reservations/:reservations_id/edit">
+        <Edit />
+      </Route>
       <Route path="/tables/new">
         <CreateTables />
       </Route>
       <Route>
-        <MobileSearch path="/search"/>
+        <MobileSearch exact={true} path="/search"/>
       </Route>
       <Route>
         <NotFound />
