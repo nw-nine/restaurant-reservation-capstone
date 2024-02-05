@@ -8,18 +8,26 @@ function ViewTables() {
     const [tables, setTables] = useState([])
     const [tablesError, setTablesError] = useState(null)
 
-    useEffect(loadTables, [])
+    useEffect(() => {
+        const abortController = new AbortController();
+        loadTables(abortController.signal);
+        return () => abortController.abort();
+    }, []);
 
-    function loadTables() {
-        const abortController = new AbortController()
-        setTablesError(null)
-        listTables(abortController.signal).then(setTables).catch(setTablesError)
-        return () => abortController.abort()
+    function loadTables(signal) {
+        setTablesError(null);
+        listTables(signal)
+            .then(setTables)
+            .catch(setTablesError);
     }
 
-    function deleteHandler(table_id) {
-        unseat(table_id).then(loadTables).catch(setTablesError)
-        window.location.reload()
+    async function deleteHandler(table_id) {
+        
+            await unseat(table_id)
+                .then(() => loadTables(new AbortController().signal))
+                .catch(setTablesError);
+            window.location.reload()
+        
     }
 
     return (
